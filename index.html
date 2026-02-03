@@ -35,6 +35,38 @@
             min-height: 2rem;
         }
 
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .score-item {
+            padding: 10px 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score-item.x {
+            color: #e74c3c;
+        }
+
+        .score-item.o {
+            color: #3498db;
+        }
+
+        .score-item.draw {
+            color: #555;
+        }
+
+        .score-value {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
         .board {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -92,6 +124,11 @@
 <body>
     <div class="container">
         <h1>Tic-Tac-Toe</h1>
+        <div class="scoreboard">
+            <div class="score-item x">X Wins: <span class="score-value" id="xScore">0</span></div>
+            <div class="score-item draw">Draws: <span class="score-value" id="drawScore">0</span></div>
+            <div class="score-item o">O Wins: <span class="score-value" id="oScore">0</span></div>
+        </div>
         <div class="status" id="status">Player X's turn</div>
         <div class="board" id="board">
             <div class="cell" data-index="0"></div>
@@ -111,10 +148,14 @@
         const cells = document.querySelectorAll('.cell');
         const statusDisplay = document.getElementById('status');
         const resetBtn = document.getElementById('resetBtn');
+        const xScoreDisplay = document.getElementById('xScore');
+        const oScoreDisplay = document.getElementById('oScore');
+        const drawScoreDisplay = document.getElementById('drawScore');
 
         let board = ['', '', '', '', '', '', '', '', ''];
         let currentPlayer = 'X';
         let gameActive = true;
+        let scores = { X: 0, O: 0, draw: 0 };
 
         const winningCombinations = [
             [0, 1, 2], // Top row
@@ -142,6 +183,8 @@
             if (checkWin()) {
                 statusDisplay.textContent = `Player ${currentPlayer} wins!`;
                 gameActive = false;
+                scores[currentPlayer]++;
+                updateScoreDisplay();
                 highlightWinningCells();
                 return;
             }
@@ -149,6 +192,8 @@
             if (checkDraw()) {
                 statusDisplay.textContent = "It's a draw!";
                 gameActive = false;
+                scores.draw++;
+                updateScoreDisplay();
                 return;
             }
 
@@ -166,6 +211,12 @@
 
         function checkDraw() {
             return board.every(cell => cell !== '');
+        }
+
+        function updateScoreDisplay() {
+            xScoreDisplay.textContent = scores.X;
+            oScoreDisplay.textContent = scores.O;
+            drawScoreDisplay.textContent = scores.draw;
         }
 
         function highlightWinningCells() {
